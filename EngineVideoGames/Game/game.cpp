@@ -48,27 +48,21 @@ void Game::Init()
 		{
 			if ((control_point == 0) && (segment == 0))
 			{
-				//myTranslate(tmp_control_point, 0);
-
-				shapeTransformation(xLocalTranslate, 1);
-				shapeTransformation(yLocalTranslate, 1);
-				shapeTransformation(zLocalTranslate, 1);
-
-				shapeTransformation(yScale, 0.1);
-				shapeTransformation(xScale, 0.1);
-				shapeTransformation(zScale, 0.1);
-				continue;
+				
 			}
-			addShapeCopy(2, -1, TRIANGLES);
+			else
+			{
+				addShapeCopy(2, -1, TRIANGLES);
+			}
 			tmp_control_point = *line.GetControlPoint(segment, control_point).GetPos();
 
 			pickedShape = 2 + segment*4 + control_point;
 
 			//myTranslate(tmp_control_point, 0);
 			
-			shapeTransformation(xLocalTranslate, 1);
-			shapeTransformation(yLocalTranslate, 1);
-			shapeTransformation(zLocalTranslate, 1);
+			shapeTransformation(xLocalTranslate, tmp_control_point.x);
+			shapeTransformation(yLocalTranslate, tmp_control_point.y);
+			shapeTransformation(zLocalTranslate, tmp_control_point.z);
 
 			shapeTransformation(yScale, 0.1);
 			shapeTransformation(xScale, 0.1);
