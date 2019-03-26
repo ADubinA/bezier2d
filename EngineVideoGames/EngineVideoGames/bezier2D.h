@@ -4,7 +4,7 @@ class Bezier2D
 {
 	int circularSubdivision; //usualy 4 how many subdivision in circular direction
 	glm::vec3 axis;
-	Bezier1D b;				 
+	Bezier1D b= *(new Bezier1D());
 
 public:
 	Bezier2D(void);
