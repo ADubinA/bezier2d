@@ -42,7 +42,7 @@ LineVertex Bezier1D::GetVertex(int segment, float t)
 	glm::mat4 segment_coord = this->segments[segment];
 	glm::vec3 position = glm::vec3(segment_coord[0]) * float(pow((1 - t), 3)) +
 		                 glm::vec3(segment_coord[1]) * float(3 * pow((1 - t), 2) * t) +
-		                 glm::vec3(segment_coord[2]) * float(3 * pow((t), 2) * (t-1)) +
+		                 glm::vec3(segment_coord[2]) * float(3 * pow((t), 2) * (1-t)) +
 		                 glm::vec3(segment_coord[3]) * float(pow((t), 3));
 
 	return LineVertex(position, glm::vec3(0, 0, 1));

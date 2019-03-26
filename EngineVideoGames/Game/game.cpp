@@ -37,6 +37,7 @@ void Game::Init()
 {
 	addShape(Axis,-1,LINES);
 	addShape(BezierLine, -1, LINE_STRIP);
+
 	addShape(Cube, -1, TRIANGLES);
 
 	Bezier1D line = *(shapes[1]->mesh)->curve; //TODO danger zone
@@ -83,6 +84,9 @@ void Game::Init()
 
 	
 	//pickedShape = 1;
+	//shapeTransformation(yScale, 5);
+	//shapeTransformation(xScale, 5);
+	//shapeTransformation(zScale, 5);
 	//shapeTransformation(yGlobalTranslate,5);
 	
 	//pickedShape = 2;
