@@ -36,9 +36,46 @@ void Game::addShape(int type,int parent,unsigned int mode)
 void Game::Init()
 {
 	addShape(Axis,-1,LINES);
-	//addShape(Cube,-1,TRIANGLES);
 	addShape(BezierLine, -1, LINE_STRIP);
-	//addShapeCopy(1,-1,TRIANGLES);
+	addShape(Cube, -1, TRIANGLES);
+
+	Bezier1D line = *(shapes[1]->mesh)->curve; //TODO danger zone
+	glm::vec3 tmp_control_point;
+	for (int segment = 0; segment < line.num_of_segments; segment++) 
+	{
+		// TODO DON"T draw double
+		for (int control_point = 0; control_point < 4; control_point++)
+		{
+			if ((control_point == 0) && (segment == 0))
+			{
+				//myTranslate(tmp_control_point, 0);
+
+				shapeTransformation(xLocalTranslate, 1);
+				shapeTransformation(yLocalTranslate, 1);
+				shapeTransformation(zLocalTranslate, 1);
+
+				shapeTransformation(yScale, 0.1);
+				shapeTransformation(xScale, 0.1);
+				shapeTransformation(zScale, 0.1);
+				continue;
+			}
+			addShapeCopy(2, -1, TRIANGLES);
+			tmp_control_point = *line.GetControlPoint(segment, control_point).GetPos();
+
+			pickedShape = 2 + segment*4 + control_point;
+
+			//myTranslate(tmp_control_point, 0);
+			
+			shapeTransformation(xLocalTranslate, 1);
+			shapeTransformation(yLocalTranslate, 1);
+			shapeTransformation(zLocalTranslate, 1);
+
+			shapeTransformation(yScale, 0.1);
+			shapeTransformation(xScale, 0.1);
+			shapeTransformation(zScale, 0.1);
+		}
+	}
+	
 	//addShapeFromFile("../res/objs/testBoxNoUV.obj",-1,TRIANGLES);
 	
 	//translate all scene away from camera

@@ -21,6 +21,7 @@ MeshConstructor::MeshConstructor(const int type)
 		 break;
 	case BezierLine:
 		InitLine(line.GetLine(30));
+
 		break;
 	default:
 		break;
@@ -42,6 +43,7 @@ MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int res
 	//}
 	//else
 	//{
+	this->curve = curve;
 	InitLine( curve->GetLine(resT));
 	//}
 }
@@ -67,7 +69,7 @@ MeshConstructor::~MeshConstructor(void)
 }
 
 void MeshConstructor::InitLine(IndexedModel &model){
-	
+	this->model = model;
 	int verticesNum = model.positions.size();
 	indicesNum = model.indices.size();
 	

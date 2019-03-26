@@ -10,7 +10,6 @@ class MeshConstructor
 {
 	VertexArray vao;
 	IndexBuffer *ib;
-//	IndexedModel model;
 	std::vector<VertexBuffer*> vbs;
 	bool is2D;
 	int unsigned indicesNum;
@@ -22,6 +21,8 @@ class MeshConstructor
 	
 	
 public:
+	IndexedModel model;
+	Bezier1D *curve;
 	enum SimpleShapes
 	{
 		Axis,

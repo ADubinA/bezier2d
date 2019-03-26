@@ -34,6 +34,11 @@ Shape::Shape(Bezier1D *curve, unsigned int xResolution,unsigned int yResolution,
 	isCopy = false;
 }
 
+//MeshConstructor Shape::GetMesh()
+//{
+//	return *this->mesh;
+//}
+
 
 void Shape::AddTexture(const std::string& textureFileName)
 {

@@ -10,13 +10,14 @@ class Shape : public MovableGLM
 {
 private:
 
-	MeshConstructor *mesh;
+	
 	Texture *tex;
 	
 	bool isCopy;
 	unsigned int mode;
 	
 public:
+	MeshConstructor *mesh;
 
 	Shape(const Shape& shape,unsigned int mode);
 
@@ -25,6 +26,8 @@ public:
 	Shape(const int SimpleShapeType,unsigned int mode);
 
 	Shape(Bezier1D *curve, unsigned int xResolution,unsigned int yResolution,bool is2D,unsigned int mode);
+
+	//MeshConstructor GetMesh();
 
 	void AddTexture(const std::string& textureFileName);
 
