@@ -1,13 +1,13 @@
 #pragma once
 #include "Mesh.h"
-
+#include "glm/gtc/matrix_transform.hpp"
 class Bezier1D
 {
 	//each line in the matrix represents x,y,z,w of a control point
 	
 public:
 	std::vector<glm::mat4> segments;
-	const int num_of_segments = 1;
+	const int num_of_segments = 3;
 	Bezier1D(void);
 	IndexedModel GetLine(int resT);						//generates model for rendering using MeshConstructor::initLin
 	LineVertex GetVertex(int segment,float t);			//returns point on curve in the requested segment for value of t
@@ -15,7 +15,7 @@ public:
 	
 	glm::vec3 GetVelosity(int segment,float t);			//returns the derivative of the curve in the requested segment for value of t
 
-	void MoveControlPoint(int segment, int indx,bool preserveC1); //change the positon of one control point. when preserveC1 is true it may affect other  control points 
+	void MoveControlPoint(int segment, int indx,bool preserveC1, glm::vec3 newPosition); //change the positon of one control point. when preserveC1 is true it may affect other  control points 
 	
 
 	~Bezier1D(void);

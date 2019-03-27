@@ -14,10 +14,11 @@ private:
 	Texture *tex;
 	
 	bool isCopy;
-	unsigned int mode;
+	
 	
 public:
 	MeshConstructor *mesh;
+	unsigned int mode;
 
 	Shape(const Shape& shape,unsigned int mode);
 

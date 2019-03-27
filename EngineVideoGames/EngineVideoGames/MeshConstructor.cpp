@@ -21,8 +21,9 @@ MeshConstructor::MeshConstructor(const int type)
 		 break;
 	case BezierLine:
 		InitLine(line.GetLine(30));
-
 		break;
+	///*case BezierSurface:
+	//*/	InitMesh(surface->GetSurface(30, 30));
 	default:
 		break;
 	}

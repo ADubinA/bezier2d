@@ -3,14 +3,22 @@
 
 Bezier1D::Bezier1D(void)
 {
-	//for (int i = 0; i < this->num_of_segments; i++)
-	//{
+
 		segments.push_back(glm::mat4(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
 						             glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),
 						             glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
 						             glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)
 									)); // TODO change that?
-	//}
+		segments.push_back(glm::mat4(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
+			glm::vec4(-1.0f, 1.0f, 0.0f, 0.0f),
+			glm::vec4(-1.0f, 2.0f, 0.0f, 0.0f),
+			glm::vec4(0.0f, 2.0f, 0.0f, 0.0f)
+		));
+		segments.push_back(glm::mat4(glm::vec4(0.0f, 2.0f, 0.0f, 0.0f),
+			glm::vec4(1.0f, 2.0f, 0.0f, 0.0f),
+			glm::vec4(1.0f, 3.0f, 0.0f, 0.0f),
+			glm::vec4(0.0f, 3.0f, 0.0f, 0.0f)
+		));
 }
 
 IndexedModel Bezier1D::GetLine(int resT)
@@ -64,10 +72,15 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 	return position;
 }
 
-void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1)
+void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec3 newPosition)
 {
-	//glm::mat4 segment_coord = this->segments[segment];
-	// TODO WTF Tamir? to move where???
+	glm::mat4 segment_coord = this->segments[segment];
+	if (segment == 0 && indx<=1) {
+		segment_coord[indx] = glm::translate(glm::mat4(1),newPosition) * segment_coord[indx];
+	}
+
+	
+
 
 }
 

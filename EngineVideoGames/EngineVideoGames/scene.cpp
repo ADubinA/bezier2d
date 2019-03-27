@@ -144,6 +144,9 @@ using namespace glm;
 					int i = pickedShape;
 					for (; chainParents[i] > -1; i = chainParents[i]);
 					shapes[i]->myTranslate(vec3(amt,0,0),1);
+					if (shapes[i]->mode == Cube) {
+						WhenTranslate(vec3(amt, 0, 0));
+					}
 				}
 				break;
 			case yLocalTranslate:
@@ -154,7 +157,11 @@ using namespace glm;
 						int i = pickedShape;
 						for (; chainParents[i] > -1; i = chainParents[i]);
 						shapes[i]->myTranslate(vec3(0,amt,0),1);
+						if (shapes[i]->mode == Cube) {
+							WhenTranslate(vec3(0, amt, 0));
+						}
 					}
+
 				break;
 			case zLocalTranslate:
 				if(pickedShape ==-1)
@@ -164,6 +171,9 @@ using namespace glm;
 					int i = pickedShape;
 					for (; chainParents[i] > -1; i = chainParents[i]);
 					shapes[i]->myTranslate(vec3(0,0,amt),1);
+					if (shapes[i]->mode == Cube) {
+						WhenTranslate(vec3(0, 0, amt));
+					}
 				}
 				break;
 			case xGlobalTranslate:
@@ -404,7 +414,7 @@ using namespace glm;
 
 				shapeTransformation(xCameraTranslate,-transX);
 				shapeTransformation(yCameraTranslate,transY);
-				WhenTranslate();
+				//WhenTranslate();
 			}
 			else
 			{
@@ -440,4 +450,8 @@ using namespace glm;
 	delete axisMesh;
 
 }
+	 void Scene:: WhenTranslate(glm::vec3 transVec) {
+		Bezier1D line = *(shapes[1]->mesh)->curve;
+		line.MoveControlPoint(0, 0, false, transVec);
+	}
 	 
