@@ -7,7 +7,7 @@ class Bezier1D
 	
 public:
 	std::vector<glm::mat4> segments;
-	const int num_of_segments = 3;
+	const int num_of_segments = 7;
 	Bezier1D(void);
 	IndexedModel GetLine(int resT);						//generates model for rendering using MeshConstructor::initLin
 	LineVertex GetVertex(int segment,float t);			//returns point on curve in the requested segment for value of t

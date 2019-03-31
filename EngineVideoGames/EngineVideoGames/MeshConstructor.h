@@ -14,13 +14,13 @@ class MeshConstructor
 	bool is2D;
 	int unsigned indicesNum;
 	
-	void InitLine(IndexedModel &model);
 	void InitMesh(IndexedModel &model);
 	void CopyMesh(const MeshConstructor &mesh);
 	void CopyLine(const MeshConstructor &mesh);
 	
 	
 public:
+	void InitLine(IndexedModel &model);
 	IndexedModel model;
 	Bezier1D *curve;
 	enum SimpleShapes

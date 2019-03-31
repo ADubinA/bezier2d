@@ -1,5 +1,6 @@
 #include "game.h"
 #include <iostream>
+#include "math.h"
 
 static void printMat(const glm::mat4 mat)
 {
@@ -118,14 +119,53 @@ void Game::WhenTranslate()
 	if(pickedShape>=0)
 	{
 		glm::vec4 pos = GetShapeTransformation()*glm::vec4(0,0,0,1);
-		std::cout<<"( "<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
-		Bezier1D line = *(shapes[1]->mesh)->curve;
-		int segment = (pickedShape - 2) / 4;
-		int index = (pickedShape - 2) % 4;
-		line.MoveControlPoint(segment, index, false, pos);
+		//std::cout<<"( "<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
+		//Bezier1D line = *(shapes[1]->mesh)->curve;
+		int segment, index;
+		if (pickedShape < 6)
+		{
+			segment = 0;
+			index = pickedShape - 2;
+		}
+		else
+		{
+			segment = (pickedShape -3) / 3;
+			index = (pickedShape) % 3 +1;
+		}
+
+		curve->MoveControlPoint(segment, index, true, pos);
+		updateCubsLocation();
+
+		shapes[1]->mesh->InitLine(curve->GetLine(30));
+
 		//delete shapes[1];
-		shapes[1] = new Shape(&line, 30, 30, false, LINE_STRIP);
+		//shapes[1] = new Shape(&line, 30, 30, false, LINE_STRIP);
+		
 	}
+}
+
+void Game::updateCubsLocation()
+{
+	int old_pickedShape = pickedShape;
+	glm::vec3 tmp_control_point;
+	for (int segment = 0; segment < curve->num_of_segments; segment++)
+	{
+		for (int control_point = 0; control_point < 3; control_point++)
+		{
+
+			tmp_control_point = *curve->GetControlPoint(segment, control_point).GetPos();
+
+			pickedShape = 2 + segment * 3 + control_point;
+
+			//myTranslate(tmp_control_point, 0);
+			glm::vec4 pos = GetShapeTransformation()*glm::vec4(0, 0, 0, 1);
+			
+			shapeTransformation(xLocalTranslate, -pos.x + tmp_control_point.x);
+			shapeTransformation(yLocalTranslate, -pos.y + tmp_control_point.y);
+			shapeTransformation(zLocalTranslate, -pos.z + tmp_control_point.z);
+		}
+	}
+	pickedShape = old_pickedShape;
 }
 
 Game::~Game(void)

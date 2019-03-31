@@ -1,24 +1,34 @@
 #include "bezier1D.h"
 #include "math.h"
+#include <iostream>
 
 Bezier1D::Bezier1D(void)
 {
-
-		segments.push_back(glm::mat4(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
-						             glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),
-						             glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
-						             glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)
-									)); // TODO change that?
-		segments.push_back(glm::mat4(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
-			glm::vec4(-1.0f, 1.0f, 0.0f, 0.0f),
-			glm::vec4(-1.0f, 2.0f, 0.0f, 0.0f),
-			glm::vec4(0.0f, 2.0f, 0.0f, 0.0f)
-		));
-		segments.push_back(glm::mat4(glm::vec4(0.0f, 2.0f, 0.0f, 0.0f),
-			glm::vec4(1.0f, 2.0f, 0.0f, 0.0f),
-			glm::vec4(1.0f, 3.0f, 0.0f, 0.0f),
-			glm::vec4(0.0f, 3.0f, 0.0f, 0.0f)
-		));
+	for (int i = 0; i < this->num_of_segments; i++)
+	{
+		int sign =  (i % 2 == 0) ? 1 : -1;
+		segments.push_back(glm::mat4(
+			glm::vec4(0.0f, i, 0.0f, 0.0f),
+			glm::vec4(sign * 1.0f, i, 0.0f, 0.0f),
+			glm::vec4(sign * 1.0f, i + 1.0f, 0.0f, 0.0f),
+			glm::vec4(0.0f, i + 1.0f, 0.0f, 0.0f)
+		)); 
+	}
+		//segments.push_back(glm::mat4(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
+		//				             glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),
+		//				             glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
+		//				             glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)
+		//							)); // TODO change that?
+		//segments.push_back(glm::mat4(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
+		//	glm::vec4(-1.0f, 1.0f, 0.0f, 0.0f),
+		//	glm::vec4(-1.0f, 2.0f, 0.0f, 0.0f),
+		//	glm::vec4(0.0f, 2.0f, 0.0f, 0.0f)
+		//));
+		//segments.push_back(glm::mat4(glm::vec4(0.0f, 2.0f, 0.0f, 0.0f),
+		//	glm::vec4(1.0f, 2.0f, 0.0f, 0.0f),
+		//	glm::vec4(1.0f, 3.0f, 0.0f, 0.0f),
+		//	glm::vec4(0.0f, 3.0f, 0.0f, 0.0f)
+		//));
 }
 
 IndexedModel Bezier1D::GetLine(int resT)
@@ -75,15 +85,54 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 
 void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec4 newPosition)
 {
-	glm::mat4 segment_coord = this->segments[segment];
-	if (preserveC1)
-	{
+	newPosition.w = 0;
+	this->segments[segment][indx] = newPosition;
 
-	}
-	else
+	if (indx == 0)
 	{
-		this->segments[segment][indx] = newPosition;
+		if (segment != 0)
+		{
+			this->segments[segment - 1][3] = newPosition;
+		}
 	}
+	else if (indx == 3)
+	{
+		if (segment != this->num_of_segments - 1)
+		{
+			this->segments[segment +1][0] = newPosition;
+
+		}
+	}
+		
+	if (preserveC1 &&!(segment==0 && indx<2)&& !(segment==num_of_segments-1 && indx>1 ))
+	{
+		glm::vec4 distance_vector = newPosition - this->segments[segment][indx];
+		glm::vec4 m;
+		switch (indx)
+		{
+		case 0:
+			this->segments[segment - 1][2] += distance_vector;
+			this->segments[segment][1] += distance_vector;
+			break;
+
+		case 1:
+			m = this->segments[segment][1] - this->segments[segment][0];
+			m = glm::normalize(m);
+			this->segments[segment - 1][3] = newPosition + m * this->segments[segment - 1][3];
+			break;
+
+		case 2:
+			break;
+
+		case 3:
+			this->segments[segment + 1][1] += distance_vector;
+			this->segments[segment][2] += distance_vector;
+			break;
+		}
+	}
+
+		
+	
 	//if (segment == 0 && indx<=1) {
 	//	segment_coord[indx] = glm::translate(glm::mat4(1),newPosition) * segment_coord[indx];
 	//}
