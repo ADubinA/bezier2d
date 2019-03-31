@@ -62,6 +62,7 @@ LineVertex Bezier1D::GetControlPoint(int segment, int indx)
 	return control_point;
 }
 
+
 glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 {
 	glm::mat4 segment_coord = this->segments[segment];
@@ -72,12 +73,21 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 	return position;
 }
 
-void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec3 newPosition)
+void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec4 newPosition)
 {
 	glm::mat4 segment_coord = this->segments[segment];
-	if (segment == 0 && indx<=1) {
-		segment_coord[indx] = glm::translate(glm::mat4(1),newPosition) * segment_coord[indx];
+	if (preserveC1)
+	{
+
 	}
+	else
+	{
+		this->segments[segment][indx] = newPosition;
+	}
+	//if (segment == 0 && indx<=1) {
+	//	segment_coord[indx] = glm::translate(glm::mat4(1),newPosition) * segment_coord[indx];
+	//}
+
 
 	
 

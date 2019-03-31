@@ -40,12 +40,12 @@ void Game::Init()
 
 	addShape(Cube, -1, TRIANGLES);
 
-	Bezier1D line = *(shapes[1]->mesh)->curve; //TODO danger zone
+	Bezier1D line = *(shapes[1]->mesh)->curve;
 	glm::vec3 tmp_control_point;
 	for (int segment = 0; segment < line.num_of_segments; segment++) 
 	{
 		// TODO DON"T draw double
-		for (int control_point = 0; control_point < 4; control_point++)
+		for (int control_point = 0; control_point < 3; control_point++)
 		{
 			if ((control_point == 0) && (segment == 0))
 			{
@@ -57,7 +57,7 @@ void Game::Init()
 			}
 			tmp_control_point = *line.GetControlPoint(segment, control_point).GetPos();
 
-			pickedShape = 2 + segment*4 + control_point;
+			pickedShape = 2 + segment*3 + control_point;
 
 			//myTranslate(tmp_control_point, 0);
 			
@@ -119,6 +119,12 @@ void Game::WhenTranslate()
 	{
 		glm::vec4 pos = GetShapeTransformation()*glm::vec4(0,0,0,1);
 		std::cout<<"( "<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
+		Bezier1D line = *(shapes[1]->mesh)->curve;
+		int segment = (pickedShape - 2) / 4;
+		int index = (pickedShape - 2) % 4;
+		line.MoveControlPoint(segment, index, false, pos);
+		//delete shapes[1];
+		shapes[1] = new Shape(&line, 30, 30, false, LINE_STRIP);
 	}
 }
 

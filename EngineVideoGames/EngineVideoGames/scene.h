@@ -38,7 +38,7 @@ public:
 	//virtual void Update( glm::mat4 MVP ,glm::mat4 *jointTransforms,const int length,const int  shaderIndx);//
 
 	virtual void Update( glm::mat4 MVP ,glm::mat4 Normals,Shader* s) = 0;
-	virtual void WhenTranslate(glm::vec3 transVec);
+	virtual void WhenTranslate() {};
 	virtual void WhenRotate(){};
 
 	glm::mat4 GetViewProjection(int indx) const;
