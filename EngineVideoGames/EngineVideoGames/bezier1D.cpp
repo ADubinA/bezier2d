@@ -87,6 +87,12 @@ void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec
 {
 	newPosition.w = 0;
 	glm::vec4 distance_vector = newPosition - this->segments[segment][indx];
+	glm::vec4 old_pos = this->segments[segment][indx];
+	float d_pre ;
+	float e_pre;
+	float d_after ;
+	float e_after ;
+	glm::vec4 direction ;
 
 	this->segments[segment][indx] = newPosition;
 
@@ -117,18 +123,22 @@ void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec
 			break;
 
 		case 1:
-			//m = this->segments[segment][1] - this->segments[segment][0];
-			//m = glm::normalize(m);
-			//this->segments[segment - 1][3] = newPosition + m * this->segments[segment - 1][3];
+			d_after = glm::distance(newPosition, this->segments[segment-1][3]);
+			direction = glm::normalize(newPosition - this->segments[segment-1][3]);
+			this->segments[segment - 1][2] = this->segments[segment-1][3] - direction* d_after;
 			break;
 
 		case 2:
+			d_after = glm::distance(newPosition, this->segments[segment][3]);
+			direction = glm::normalize(newPosition - this->segments[segment][3]);
+			this->segments[segment + 1][1] = this->segments[segment][3] - direction* d_after;
+
+
 			break;
 
 		case 3:
 			this->segments[segment + 1][1] += distance_vector;
 			this->segments[segment][2] += distance_vector;
-			std::cout << distance_vector.x << std::endl;
 			break;
 		}
 	}

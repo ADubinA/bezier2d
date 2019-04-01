@@ -134,7 +134,7 @@ void Game::WhenTranslate()
 		}
 
 		curve->MoveControlPoint(segment, index, true, pos);
-		updateCubsLocation();
+		
 
 		shapes[1]->mesh->InitLine(curve->GetLine(30));
 
