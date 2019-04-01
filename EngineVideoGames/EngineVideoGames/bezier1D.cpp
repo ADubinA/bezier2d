@@ -86,6 +86,8 @@ glm::vec3 Bezier1D::GetVelosity(int segment, float t)
 void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec4 newPosition)
 {
 	newPosition.w = 0;
+	glm::vec4 distance_vector = newPosition - this->segments[segment][indx];
+
 	this->segments[segment][indx] = newPosition;
 
 	if (indx == 0)
@@ -106,7 +108,6 @@ void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec
 		
 	if (preserveC1 &&!(segment==0 && indx<2)&& !(segment==num_of_segments-1 && indx>1 ))
 	{
-		glm::vec4 distance_vector = newPosition - this->segments[segment][indx];
 		glm::vec4 m;
 		switch (indx)
 		{
@@ -116,9 +117,9 @@ void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec
 			break;
 
 		case 1:
-			m = this->segments[segment][1] - this->segments[segment][0];
-			m = glm::normalize(m);
-			this->segments[segment - 1][3] = newPosition + m * this->segments[segment - 1][3];
+			//m = this->segments[segment][1] - this->segments[segment][0];
+			//m = glm::normalize(m);
+			//this->segments[segment - 1][3] = newPosition + m * this->segments[segment - 1][3];
 			break;
 
 		case 2:
@@ -127,6 +128,7 @@ void Bezier1D::MoveControlPoint(int segment, int indx, bool preserveC1, glm::vec
 		case 3:
 			this->segments[segment + 1][1] += distance_vector;
 			this->segments[segment][2] += distance_vector;
+			std::cout << distance_vector.x << std::endl;
 			break;
 		}
 	}
