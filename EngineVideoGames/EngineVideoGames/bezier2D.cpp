@@ -1,6 +1,6 @@
 #include "bezier2D.h"
 #include "glm/gtx/transform.hpp"
-# define M_PI           3.14159265358979323846  /* pi */
+# define M_PI           3.14159265f /* pi */
 
 
 
@@ -20,29 +20,56 @@ Bezier2D::Bezier2D(Bezier1D& b, glm::vec3 axis, int circularSubdivision)
 IndexedModel Bezier2D::GetSurface(int resT, int resS)
 {
 	IndexedModel surface;
-	int counter=0;
-	Vertex vertex = Vertex(glm::vec3(0), glm::vec2(0), glm::vec3(0), glm::vec3(0));
-	float time = 0.0f;
+	
+	Vertex vertex1 = Vertex(glm::vec3(0), glm::vec2(0), glm::vec3(0), glm::vec3(0));
+	Vertex vertex2 = Vertex(glm::vec3(0), glm::vec2(0), glm::vec3(0), glm::vec3(0));
+	Vertex vertex3 = Vertex(glm::vec3(0), glm::vec2(0), glm::vec3(0), glm::vec3(0));
+	Vertex vertex4 = Vertex(glm::vec3(0), glm::vec2(0), glm::vec3(0), glm::vec3(0));
+	float timet = 0.0f;
+	float times = 0.0f;
 	for (int segment_indexT = 0; segment_indexT < this->b.num_of_segments; segment_indexT++)
 	{
-		for (int segment_indexS = 0; segment_indexS < this->b.num_of_segments; segment_indexS++)
-		{
-			for (int t = 0; t < resT; t++) {
+
+		for (int t = 0; t < resT-1; t++) { //resT-1?
+ 			for (int s = 0; s < resS-1; s++) { //resS-1?
+
 				// calcualte line
-				time = (float)t / resT;
-				vertex = this->GetVertex(segment_indexT, segment_indexS, time, 0);
+				timet = (float)t / resT;
+				times = (float)s / resS;
+				vertex1 = this->GetVertex(segment_indexT, 0, timet, times);
+				vertex2 = this->GetVertex(segment_indexT, 0, timet+(1.0f / resT), times);
+				vertex3 = this->GetVertex(segment_indexT, 0, timet+(1.0f / resT), times+(1.0f / resS));
+				vertex4 = this->GetVertex(segment_indexT, 0, timet, times+(1.0f / resS));
 
 				// insert to indexed model line
-				surface.positions.push_back(*vertex.GetPos());
-				surface.colors.push_back(*vertex.GetColor());
+				surface.positions.push_back(*vertex1.GetPos());
+				surface.positions.push_back(*vertex2.GetPos());
+				surface.positions.push_back(*vertex3.GetPos());
+				surface.positions.push_back(*vertex4.GetPos());
+				surface.colors.push_back(*vertex1.GetColor());
+				surface.colors.push_back(*vertex2.GetColor());
+				surface.colors.push_back(*vertex3.GetColor());
+				surface.colors.push_back(*vertex4.GetColor());
+				surface.normals.push_back(glm::vec3(1));
+				surface.normals.push_back(glm::vec3(1));
+				surface.normals.push_back(glm::vec3(1));
 				surface.normals.push_back(glm::vec3(1));
 				surface.texCoords.push_back(glm::vec2(1));
-				surface.indices.push_back(counter);
-				counter++;
-			}
+				surface.texCoords.push_back(glm::vec2(1));
+				surface.texCoords.push_back(glm::vec2(1));
+				surface.texCoords.push_back(glm::vec2(1));
+				surface.indices.push_back(segment_indexT*(resT-1)*(resS-1)+ (t)*(resS-1) +s);
+				surface.indices.push_back(segment_indexT*(resT - 1)*(resS - 1) + (t+1)*(resS - 1) + s);
+				surface.indices.push_back(segment_indexT*(resT - 1)*(resS - 1) + (t + 1)*(resS - 1) + s+1);
+				surface.indices.push_back(segment_indexT*(resT - 1)*(resS - 1) + (t)*(resS - 1) + s+1);
 			
+			}
 		}
-		time = 0.0f;
+			
+		
+		timet = 0.0f;
+		times = 0.0f;
+
 	}
 	
 	return surface;
@@ -52,7 +79,7 @@ Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 {
 	glm::mat4 segment_coordT = this->b.segments[segmentT];
 
-	glm::mat4 rotateMat= glm::rotate((float)((360*segmentS) / this->circularSubdivision), this->axis);
+	glm::mat4 rotateMat= glm::rotate(360.0f* s , this->axis);
 	
 
 	glm::vec3 pos= glm::vec3(rotateMat * glm::vec4(*b.GetVertex(segmentT, t).GetPos(),1));
@@ -68,5 +95,4 @@ Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 
 Bezier2D::~Bezier2D(void)
 {
-	//delete &this->b;
 }

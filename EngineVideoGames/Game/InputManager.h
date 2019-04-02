@@ -1,7 +1,7 @@
 #pragma once   //maybe should be static class
 #include "display.h"
 #include "game.h"
-
+#include <iostream>
 
 	void mouse_callback(GLFWwindow* window,int button, int action, int mods)
 	{	
@@ -32,6 +32,10 @@
 				case GLFW_KEY_ESCAPE:			
 					glfwSetWindowShouldClose(window,GLFW_TRUE);
 				break;
+				case GLFW_KEY_SPACE:
+					scn->change_mode();
+					std::cout<<"2D mode: " << scn->is2D<<std::endl;
+					break;
 				
 			default:
 				break;

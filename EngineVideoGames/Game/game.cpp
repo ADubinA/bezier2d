@@ -28,50 +28,62 @@ void Game::addShape(int type,int parent,unsigned int mode)
 		else
 		{
 			if(type == BezierLine)
-				shapes.push_back(new Shape(curve,30,30,false,mode));
+				shapes.push_back(new Shape(curve,10, 10,false,mode));
 			else
-				shapes.push_back(new Shape(curve,30,30,true,mode));
+				shapes.push_back(new Shape(curve, 10, 10,true,mode));
 		}
 }
 
 void Game::Init()
 {
 	addShape(Axis,-1,LINES);
-	//addShape(BezierLine, -1, LINE_STRIP);
+	addShape(BezierLine, -1, LINE_STRIP);
 
-	//addShape(Cube, -1, TRIANGLES);
+	addShape(Cube, -1, TRIANGLES);
 
-	//Bezier1D line = *(shapes[1]->mesh)->curve;
-	//glm::vec3 tmp_control_point;
-	//for (int segment = 0; segment < line.num_of_segments; segment++) 
-	//{
-	//	// TODO DON"T draw double
-	//	for (int control_point = 0; control_point < 3; control_point++)
-	//	{
-	//		if ((control_point == 0) && (segment == 0))
-	//		{
-	//			
-	//		}
-	//		else
-	//		{
-	//			addShapeCopy(2, -1, TRIANGLES);
-	//		}
-	//		tmp_control_point = *line.GetControlPoint(segment, control_point).GetPos();
+	glm::vec3 tmp_control_point;
+	for (int segment = 0; segment < curve->num_of_segments; segment++) 
+	{
+		// TODO DON"T draw double
+		for (int control_point = 0; control_point < 3; control_point++)
+		{
 
-	//		pickedShape = 2 + segment*3 + control_point;
+			if ((control_point == 0) && (segment == 0))
+			{
+				
+			}
+			else
+			{
+				addShapeCopy(2, -1, TRIANGLES);
+			}
+			tmp_control_point = *curve->GetControlPoint(segment, control_point).GetPos();
 
-	//		//myTranslate(tmp_control_point, 0);
-	//		
-	//		shapeTransformation(xLocalTranslate, tmp_control_point.x);
-	//		shapeTransformation(yLocalTranslate, tmp_control_point.y);
-	//		shapeTransformation(zLocalTranslate, tmp_control_point.z);
+			pickedShape = 2 + segment*3 + control_point;
 
-	//		shapeTransformation(yScale, 0.1);
-	//		shapeTransformation(xScale, 0.1);
-	//		shapeTransformation(zScale, 0.1);
-	//	}
-	//}
-	addShape(BezierSurface, -1, QUADS);
+			//myTranslate(tmp_control_point, 0);
+			
+			shapeTransformation(xLocalTranslate, tmp_control_point.x);
+			shapeTransformation(yLocalTranslate, tmp_control_point.y);
+			shapeTransformation(zLocalTranslate, tmp_control_point.z);
+
+			shapeTransformation(yScale, 0.1);
+			shapeTransformation(xScale, 0.1);
+			shapeTransformation(zScale, 0.1);
+		}
+	}
+	addShapeCopy(2, -1, TRIANGLES);
+
+	pickedShape = 2 + curve->num_of_segments * 3 ;
+	tmp_control_point = *curve->GetControlPoint(curve->num_of_segments-1, 3).GetPos();
+
+	shapeTransformation(xLocalTranslate, tmp_control_point.x);
+	shapeTransformation(yLocalTranslate, tmp_control_point.y);
+	shapeTransformation(zLocalTranslate, tmp_control_point.z);
+
+	shapeTransformation(yScale, 0.1);
+	shapeTransformation(xScale, 0.1);
+	shapeTransformation(zScale, 0.1);
+
 
 	//addShapeFromFile("../res/objs/testBoxNoUV.obj",-1,TRIANGLES);
 	
@@ -167,6 +179,20 @@ void Game::updateCubsLocation()
 		}
 	}
 	pickedShape = old_pickedShape;
+}
+
+void Game::change_mode()
+{
+	is2D = !is2D;
+	if (is2D)
+	{
+		addShape(BezierSurface, -1, QUADS);
+	}
+	else
+	{
+		this->shapes.pop_back();
+		//delete 
+	}
 }
 
 Game::~Game(void)

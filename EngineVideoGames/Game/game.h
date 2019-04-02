@@ -6,6 +6,7 @@ class Game : public Scene
 {
 	Bezier1D *curve;
 public:
+	bool is2D=false;
 	Game(void);
 	Game(glm::vec3 position,float angle,float hwRelation,float near, float far);
 	void Init();
@@ -16,6 +17,7 @@ public:
 	void WhenRotate();
 	void WhenTranslate();
 	void updateCubsLocation();
+	void change_mode();
 	~Game(void);
 };
 
