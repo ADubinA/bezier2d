@@ -27,10 +27,15 @@ IndexedModel Bezier2D::GetSurface(const int resT, const int resS)
 	Vertex vertex4 = Vertex(glm::vec3(0), glm::vec2(0), glm::vec3(0), glm::vec3(0));
 	float timet = 0.0f;
 	float times = 0.0f;
-	/*int** a = new int*[rowCount];
-	for (int i = 0; i < rowCount; ++i)
-		a[i] = new int[colCount];*/
-	int array_num[3][30][30];
+	int*** array_num = new int**[b.num_of_segments];
+	for (int i = 0; i < b.num_of_segments; ++i) {
+		array_num[i] = new int*[resT];
+		for (int j = 0; j < resT; j++) {
+			array_num[i][j] = new int[resS];
+			
+		}
+	}
+		
 	int counter = 0;
 	for (int segment_indexT = 0; segment_indexT < this->b.num_of_segments; segment_indexT++) {
 		for (int t = 0; t < resT - 1; t = t + 2) { //resT-1?
@@ -93,7 +98,14 @@ IndexedModel Bezier2D::GetSurface(const int resT, const int resS)
 		times = 0.0f;
 
 	}
-	
+	for (int i = 0; i < b.num_of_segments; ++i) {
+		for (int j = 0; j < resT; j++) {
+			delete (array_num[i][j] );
+
+		}
+		delete (array_num[i]);
+
+	}
 	return surface;
 }
 
