@@ -28,9 +28,9 @@ void Game::addShape(int type,int parent,unsigned int mode)
 		else
 		{
 			if(type == BezierLine)
-				shapes.push_back(new Shape(curve,10, 10,false,mode));
+				shapes.push_back(new Shape(curve,30, 30,false,mode));
 			else
-				shapes.push_back(new Shape(curve, 10, 10,true,mode));
+				shapes.push_back(new Shape(curve, 30, 30,true,mode));
 		}
 }
 

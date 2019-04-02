@@ -17,7 +17,7 @@ Bezier2D::Bezier2D(Bezier1D& b, glm::vec3 axis, int circularSubdivision)
 	//this->b = new Bezier1D();
 }
 
-IndexedModel Bezier2D::GetSurface(int resT, int resS)
+IndexedModel Bezier2D::GetSurface(const int resT, const int resS)
 {
 	IndexedModel surface;
 	
@@ -27,11 +27,33 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 	Vertex vertex4 = Vertex(glm::vec3(0), glm::vec2(0), glm::vec3(0), glm::vec3(0));
 	float timet = 0.0f;
 	float times = 0.0f;
+	/*int** a = new int*[rowCount];
+	for (int i = 0; i < rowCount; ++i)
+		a[i] = new int[colCount];*/
+	int array_num[3][30][30];
+	int counter = 0;
+	for (int segment_indexT = 0; segment_indexT < this->b.num_of_segments; segment_indexT++) {
+		for (int t = 0; t < resT - 1; t = t + 2) { //resT-1?
+			for (int s = 0; s < resS - 1; s = s + 2) { //resS-1?
+				array_num[segment_indexT][t][s] = counter;
+				counter++;
+				array_num[segment_indexT][t + 1][s] = counter;
+				counter++;
+				array_num[segment_indexT][t+1][s + 1] = counter;
+				counter++;
+				array_num[segment_indexT][t ][s + 1] = counter;
+				counter++;
+
+			}
+		}
+	}
+
+
 	for (int segment_indexT = 0; segment_indexT < this->b.num_of_segments; segment_indexT++)
 	{
 
-		for (int t = 0; t < resT-1; t++) { //resT-1?
- 			for (int s = 0; s < resS-1; s++) { //resS-1?
+		for (int t = 0; t < resT-1; t=t+1) { //resT-1?
+ 			for (int s = 0; s < resS-1; s=s+2) { //resS-1?
 
 				// calcualte line
 				timet = (float)t / resT;
@@ -50,18 +72,18 @@ IndexedModel Bezier2D::GetSurface(int resT, int resS)
 				surface.colors.push_back(*vertex2.GetColor());
 				surface.colors.push_back(*vertex3.GetColor());
 				surface.colors.push_back(*vertex4.GetColor());
-				surface.normals.push_back(glm::vec3(1));
-				surface.normals.push_back(glm::vec3(1));
-				surface.normals.push_back(glm::vec3(1));
-				surface.normals.push_back(glm::vec3(1));
+				surface.normals.push_back(*vertex1.GetNormal());
+				surface.normals.push_back(*vertex2.GetNormal());
+				surface.normals.push_back(*vertex3.GetNormal());
+				surface.normals.push_back(*vertex4.GetNormal());
 				surface.texCoords.push_back(glm::vec2(1));
 				surface.texCoords.push_back(glm::vec2(1));
 				surface.texCoords.push_back(glm::vec2(1));
 				surface.texCoords.push_back(glm::vec2(1));
-				surface.indices.push_back(segment_indexT*(resT-1)*(resS-1)+ (t)*(resS-1) +s);
-				surface.indices.push_back(segment_indexT*(resT - 1)*(resS - 1) + (t+1)*(resS - 1) + s);
-				surface.indices.push_back(segment_indexT*(resT - 1)*(resS - 1) + (t + 1)*(resS - 1) + s+1);
-				surface.indices.push_back(segment_indexT*(resT - 1)*(resS - 1) + (t)*(resS - 1) + s+1);
+				surface.indices.push_back(2*array_num[segment_indexT][t][s]);
+				surface.indices.push_back(2*array_num[segment_indexT][t+1][s]);
+				surface.indices.push_back(2*array_num[segment_indexT][t+1][s+1]);
+				surface.indices.push_back(2*array_num[segment_indexT][t][s+1]);
 			
 			}
 		}
@@ -84,12 +106,26 @@ Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 
 	glm::vec3 pos= glm::vec3(rotateMat * glm::vec4(*b.GetVertex(segmentT, t).GetPos(),1));
 	glm::vec2 texCoord = glm::vec2(0);
-	glm::vec3 normal = glm::vec3(0); //TODO change that
+	glm::vec3 normal = GetNormal(segmentT, segmentS, t, s);
 	glm::vec3 color = *b.GetVertex(segmentT, t).GetColor();
 	glm::vec3 weight = glm::vec3(0);
 	Vertex vertex = Vertex(pos, texCoord, normal, color);
 	  
 	return vertex;
+}
+
+glm::vec3 Bezier2D::GetNormal(int segmentT, int segmentS, float t, float s)
+{
+ 	glm::mat4 segment_coordT = this->b.segments[segmentT];
+	glm::mat4 rotateMat = glm::rotate(360.0f* s, this->axis);
+	
+	glm::vec3 b_vec = b.GetVelosity(segmentT, t);
+	glm::vec3 c_vec =glm::vec3(rotateMat*glm::vec4(glm::vec3(0, 0, 1),0));
+	float sign = (segmentT % 2 == 0) ? 1.0f: -1.0f;
+	glm::vec3 normal = sign * glm::normalize(glm::cross(b_vec,c_vec));
+	normal.y = sign * normal.y;
+
+	return normal;
 }
 
 
