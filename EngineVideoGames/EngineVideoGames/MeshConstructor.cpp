@@ -9,8 +9,9 @@
 
 MeshConstructor::MeshConstructor(const int type)
 {
-	Bezier2D *surface;
 	Bezier1D line;
+	//Bezier2D *surface;// = new Bezier2D(line, glm::vec3(1, 0, 0), 4);
+	
 	switch (type)
 	{
 	case Axis:	
@@ -22,8 +23,8 @@ MeshConstructor::MeshConstructor(const int type)
 	case BezierLine:
 		InitLine(line.GetLine(30));
 		break;
-	///*case BezierSurface:
-	//*/	InitMesh(surface->GetSurface(30, 30));
+	/*case BezierSurface:
+		InitMesh(surface->GetSurface(30, 30));*/
 	default:
 		break;
 	}
@@ -37,16 +38,16 @@ MeshConstructor::MeshConstructor(const std::string& fileName)
 
 MeshConstructor::MeshConstructor(Bezier1D *curve,bool isSurface,unsigned int resT,unsigned int resS)
 {
-	//if(isSurface)
-	//{
-	//	Bezier2D surface(*curve,glm::vec3(0,0,1),4);
-	//	*indicesNum = InitMesh(surface.GetSurface(resT,resS),vao,ib);		
-	//}
-	//else
-	//{
-	this->curve = curve;
-	InitLine( curve->GetLine(resT));
-	//}
+	if(isSurface)
+	{
+		Bezier2D surface(*curve,glm::vec3(0,1,0),4);
+		InitMesh(surface.GetSurface(resT,resS));		
+	}
+	else
+	{
+		this->curve = curve;
+		InitLine( curve->GetLine(resT));
+	}
 }
 
 MeshConstructor::MeshConstructor(const MeshConstructor &mesh)

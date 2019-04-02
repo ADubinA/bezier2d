@@ -14,21 +14,6 @@ Bezier1D::Bezier1D(void)
 			glm::vec4(0.0f, i + 1.0f, 0.0f, 0.0f)
 		)); 
 	}
-		//segments.push_back(glm::mat4(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f),
-		//				             glm::vec4(1.0f, 0.0f, 0.0f, 0.0f),
-		//				             glm::vec4(1.0f, 1.0f, 0.0f, 0.0f),
-		//				             glm::vec4(0.0f, 1.0f, 0.0f, 0.0f)
-		//							)); // TODO change that?
-		//segments.push_back(glm::mat4(glm::vec4(0.0f, 1.0f, 0.0f, 0.0f),
-		//	glm::vec4(-1.0f, 1.0f, 0.0f, 0.0f),
-		//	glm::vec4(-1.0f, 2.0f, 0.0f, 0.0f),
-		//	glm::vec4(0.0f, 2.0f, 0.0f, 0.0f)
-		//));
-		//segments.push_back(glm::mat4(glm::vec4(0.0f, 2.0f, 0.0f, 0.0f),
-		//	glm::vec4(1.0f, 2.0f, 0.0f, 0.0f),
-		//	glm::vec4(1.0f, 3.0f, 0.0f, 0.0f),
-		//	glm::vec4(0.0f, 3.0f, 0.0f, 0.0f)
-		//));
 }
 
 IndexedModel Bezier1D::GetLine(int resT)
@@ -36,10 +21,12 @@ IndexedModel Bezier1D::GetLine(int resT)
 	IndexedModel line;
 	LineVertex vertex = LineVertex(glm::vec3(0),glm::vec3(0));
 	float time = 0.0f;
+	int counter = 0;
 	for (int segment_index = 0; segment_index < this->num_of_segments; segment_index++)
 	{
 		for (int t = 0; t < resT; t++)
 		{
+			
 			// calcualte line
 			time = (float)t / resT;
 			vertex = this->GetVertex(segment_index, time);
@@ -47,7 +34,8 @@ IndexedModel Bezier1D::GetLine(int resT)
 			// insert to indexed model line
 			line.positions.push_back(*vertex.GetPos());
 			line.colors.push_back(*vertex.GetColor());
-			line.indices.push_back(segment_index * resT + t);
+			line.indices.push_back(counter);
+			counter++;
 		}
 		time = 0.0f;
 	}
