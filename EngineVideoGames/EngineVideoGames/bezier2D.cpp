@@ -129,7 +129,8 @@ Vertex Bezier2D::GetVertex(int segmentT, int segmentS, float t, float s)
 glm::vec3 Bezier2D::GetNormal(int segmentT, int segmentS, float t, float s)
 {
  	glm::mat4 segment_coordT = this->b.segments[segmentT];
-	glm::mat4 rotateMat = glm::rotate(360.0f* s, this->axis);
+	glm::vec3 rotate_axis = glm::vec3(this->b.segments[b.num_of_segments - 1][3] - this->b.segments[0][0]);
+	glm::mat4 rotateMat = glm::rotate(360.0f* s, rotate_axis);
 	
 	glm::vec3 b_vec = b.GetVelosity(segmentT, t);
 	glm::vec3 c_vec =glm::vec3(rotateMat*glm::vec4(glm::vec3(0, 0, 1),0));
